@@ -44,7 +44,7 @@ static u32 crc32_word(u32 crc, u32 data, int cnt)
 	return crc;
 }
 
-u32 crc32(const u8 *buffer, int length, u32 crc)
+static u32 crc32(const u8 *buffer, int length, u32 crc)
 {
 	u32 *data = (u32 *)buffer;
 	u32 word;
