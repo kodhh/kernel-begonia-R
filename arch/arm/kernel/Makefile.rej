@@ -1,9 +1,0 @@
---- arch/arm/kernel/Makefile
-+++ arch/arm/kernel/Makefile
-@@ -101,4 +101,6 @@
- 
- obj-$(CONFIG_HAVE_ARM_SMCCC)	+= smccc-call.o
- 
-+obj-$(CONFIG_GENERIC_CPU_VULNERABILITIES) += spectre.o
-+
- extra-y := $(head-y) vmlinux.lds
