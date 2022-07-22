@@ -528,28 +528,38 @@ int snd_soc_put_volsw_range(struct snd_kcontrol *kcontrol,
 	unsigned int mask = (1 << fls(max)) - 1;
 	unsigned int invert = mc->invert;
 	unsigned int val, val_mask;
-	int err, ret;
-
+	int err, ret, tmp;
+	tmp = ucontrol->value.integer.value[0];
+	if (tmp < 0)
+		return -EINVAL;
+	if (mc->platform_max && tmp > mc->platform_max)
+		return -EINVAL;
+	if (tmp > mc->max - mc->min)
+		return -EINVAL;
 	if (invert)
 		val = (max - ucontrol->value.integer.value[0]) & mask;
 	else
 		val = ((ucontrol->value.integer.value[0] + min) & mask);
 	val_mask = mask << shift;
 	val = val << shift;
-
 	err = snd_soc_component_update_bits(component, reg, val_mask, val);
 	if (err < 0)
 		return err;
 	ret = err;
-
 	if (snd_soc_volsw_is_stereo(mc)) {
+		tmp = ucontrol->value.integer.value[1];
+		if (tmp < 0)
+			return -EINVAL;
+		if (mc->platform_max && tmp > mc->platform_max)
+			return -EINVAL;
+		if (tmp > mc->max - mc->min)
+			return -EINVAL;
 		if (invert)
 			val = (max - ucontrol->value.integer.value[1]) & mask;
 		else
 			val = ((ucontrol->value.integer.value[1] + min) & mask);
 		val_mask = mask << shift;
 		val = val << shift;
-
 		err = snd_soc_component_update_bits(component, rreg, val_mask,
 			val);
 		/* Don't discard any error code or drop change flag */
@@ -557,7 +567,6 @@ int snd_soc_put_volsw_range(struct snd_kcontrol *kcontrol,
 			ret = err;
 		}
 	}
-
 	return ret;
 }
 EXPORT_SYMBOL_GPL(snd_soc_put_volsw_range);
