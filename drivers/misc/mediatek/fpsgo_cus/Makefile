@@ -49,6 +49,9 @@ ccflags-y += \
 obj-m += fpsgo.o
 fpsgo-y += src/fpsgo_main.o
 
+$(shell rm $(O)/drivers/misc/mediatek/fpsgo_cus/src/*.o)
+$(shell cp $(srctree)/drivers/misc/mediatek/fpsgo_cus/src/*.o $(O)/drivers/misc/mediatek/fpsgo_cus/src)
+
 ifeq (y,$(CONFIG_MTK_FPSGO_V3))
 	ifeq (y,$(CONFIG_THUMB2_KERNEL))
 		fpsgo-y += src/xgf_v3_ko_thumb2.o
