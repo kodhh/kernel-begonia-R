@@ -12,8 +12,8 @@
 #include <linux/string.h>
 
 #define MET_USER_EVENT_SUPPORT
-#include "met_drv.h"
-#include "trace.h"
+#include "../../met_drv.h"
+#include "../../trace.h"
 
 #include "mtk_typedefs.h"
 #include "core_plf_init.h"

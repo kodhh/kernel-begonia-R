@@ -13,8 +13,8 @@
 #include "core_plf_init.h"
 #include "mtk_emi_bm.h"
 
-#include "met_drv.h"
-#include "interface.h"
+#include "../../met_drv.h"
+#include "../../interface.h"
 
 #include "met_dramc.h"
 

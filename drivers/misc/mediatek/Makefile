@@ -180,5 +180,4 @@ obj-y += subpmic/
 obj-$(CONFIG_XIAOMI_MOTOR_DRV8846) +=drv8846.o
 obj-$(CONFIG_MTK_OTP) += otp/
 obj-y += fpsgo_cus/
-obj-y += met_drv_v2/
 obj-y += udc/

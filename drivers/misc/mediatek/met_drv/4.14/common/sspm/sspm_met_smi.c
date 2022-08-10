@@ -18,8 +18,8 @@
 #include <mt-plat/sync_write.h>
 #include <mt-plat/mtk_io.h>
 
-#include "met_drv.h"
-#include "trace.h"
+#include "../met_drv.h"
+#include "../trace.h"
 
 #include "mtk_typedefs.h"
 #include "sspm_mtk_smi.h"

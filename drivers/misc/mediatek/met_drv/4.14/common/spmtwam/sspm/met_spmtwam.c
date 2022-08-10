@@ -18,10 +18,10 @@
 #include <linux/ctype.h>
 
 #include <mtk_spm.h>
-#include "met_drv.h"
-#include "trace.h"
-#include "core_plf_init.h"
-#include "interface.h"
+#include "../../met_drv.h"
+#include "../../trace.h"
+#include "../../core_plf_init.h"
+#include "../../interface.h"
 #include "met_spmtwam.h"
 
 
