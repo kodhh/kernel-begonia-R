@@ -1507,7 +1507,8 @@ static int mtk_hdmi_dt_parse_pdata(struct mtk_hdmi *hdmi,
 		dev_err(dev, "Missing connector/bridge node for endpoint %s\n",
 			ep->full_name);
 		of_node_put(ep);
-		return -EINVAL;
+		ret = -EINVAL;
+		goto put_device;
 	}
 	of_node_put(ep);
 
