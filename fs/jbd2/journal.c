@@ -745,7 +745,6 @@ int jbd2_log_wait_commit(journal_t *journal, tid_t tid)
 	return err;
 }
 
-
 int jbd2_transaction_need_wait(journal_t *journal, tid_t tid)
 {
 	int need_to_wait = 1;

@@ -782,7 +782,7 @@ start_journal_io:
 	stats.run.rs_data_flushed = jbd2_time_diff(stats.run.rs_logging,
 					       stats.run.rs_metadata_flushed);
 
-	/*
+	/* 
 	 * If the journal is not located on the file system device,
 	 * then we must flush the file system device before we issue
 	 * the commit record
