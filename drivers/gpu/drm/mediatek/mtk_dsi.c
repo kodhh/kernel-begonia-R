@@ -1688,6 +1688,10 @@ static void mtk_dsi_poweroff(struct mtk_dsi *dsi)
 		mtk_mipi_tx_ssc_disable(dsi->phy);
 	clk_disable_unprepare(dsi->engine_clk);
 	clk_disable_unprepare(dsi->digital_clk);
+
+	writel(0, dsi->regs + DSI_START);
+	writel(0, dsi->regs + DSI_CMDQ0);
+
 	phy_power_off(dsi->phy);
 	DDPDBG("%s -\n", __func__);
 }
@@ -2143,12 +2147,9 @@ static void mtk_output_dsi_disable(struct mtk_dsi *dsi,
 
 	/* set DSI into ULPS mode */
 	mtk_dsi_reset_engine(dsi);
-
 	mtk_dsi_enter_ulps(dsi);
-
 	mtk_dsi_disable(dsi);
 	mtk_dsi_stop(dsi);
-
 	mtk_dsi_poweroff(dsi);
 
 	//drm_notifier_call_chain(DRM_EVENT_BLANK, &g_notify_data);
