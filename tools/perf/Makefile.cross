@@ -8,8 +8,8 @@
 # running the following two commands will result in a static ARM build of perf
 # with various features that require external libraries:
 #
-# $ make ARCH=arm CROSS_COMPILE=arm-linux-gnueabi- -f Makefile.cross
-# $ make ARCH=arm CROSS_COMPILE=arm-linux-gnueabi- LDFLAGS="-static"
+# $ make ARCH=arm CROSS_COMPILE=arm-linux- -f Makefile.cross
+# $ make ARCH=arm CROSS_COMPILE=arm-linux- LDFLAGS="-static"
 #
 
 LIBS += audit
