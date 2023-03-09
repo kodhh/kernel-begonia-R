@@ -362,7 +362,7 @@ HOST_LFS_CFLAGS := $(shell getconf LFS_CFLAGS 2>/dev/null)
 HOST_LFS_LDFLAGS := $(shell getconf LFS_LDFLAGS 2>/dev/null)
 HOST_LFS_LIBS := $(shell getconf LFS_LIBS 2>/dev/null)
 
-ifneq ($(LLVM),)
+ifeq ($(LLVM),1)
 HOSTCC	= clang
 HOSTCXX	= clang++
 else
@@ -377,7 +377,7 @@ HOST_LOADLIBES := $(HOST_LFS_LIBS)
 
 # Make variables (CC, etc...)
 CPP		= $(CC) -E
-ifneq ($(LLVM),)
+ifeq ($(LLVM),1)
 CC		= clang
 LD		= ld.lld
 AR		= llvm-ar
@@ -702,9 +702,13 @@ KBUILD_CFLAGS	+= $(call cc-disable-warning, address-of-packed-member)
 KBUILD_CFLAGS	+= $(call cc-disable-warning, attribute-alias)
 
 ifdef CONFIG_CC_OPTIMIZE_FOR_SIZE
-KBUILD_CFLAGS   += -Os
+KBUILD_CFLAGS	+= -Os
+else
+ifeq ($(cc-name),clang)
+KBUILD_CFLAGS   += -O3
 else
 KBUILD_CFLAGS   += -O2
+endif
 endif
 
 ifdef CONFIG_LLVM_POLLY

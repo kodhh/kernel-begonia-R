@@ -5,10 +5,14 @@
 # A mix between the arm64 and arm vDSO Makefiles.
 
 ifeq ($(cc-name),clang)
-  CC_ARM32 := $(CC) $(CLANG_TARGET_ARM32) -no-integrated-as $(CLANG_GCC32_TC) $(CLANG_PREFIX32)
+  CC_ARM32 := $(CC) $(CLANG_TARGET_ARM32) $(CLANG_GCC32_TC) $(CLANG_PREFIX32)
+else
+  CC_ARM32 := $(CROSS_COMPILE_ARM32)gcc
+endif
+
+ifeq (LLVM,1)
   LD_COMPAT := $(LD)
 else
-  CC_ARM32 := $(CROSS_COMPILE_ARM32)$(cc-name)
   LD_COMPAT := $(CROSS_COMPILE_ARM32)ld
 endif
 
