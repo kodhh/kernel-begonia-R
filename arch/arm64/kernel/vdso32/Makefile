@@ -10,8 +10,8 @@ else
   CC_ARM32 := $(CROSS_COMPILE_ARM32)gcc
 endif
 
-ifeq ($(LLVM),1)
-  LD_COMPAT := ld.lld-12
+ifeq ($(cc-name),clang)
+  LD_COMPAT := ld.lld
 else
   LD_COMPAT := $(CROSS_COMPILE_ARM32)ld
 endif
