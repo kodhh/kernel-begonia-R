@@ -192,26 +192,6 @@ static unsigned long kallsyms_sym_address(int idx)
 	return kallsyms_relative_base - 1 - kallsyms_offsets[idx];
 }
 
-#if defined(CONFIG_CFI_CLANG) && defined(CONFIG_THINLTO)
-/*
- * LLVM appends a hash to static function names when ThinLTO and CFI are
- * both enabled, which causes confusion and potentially breaks user space
- * tools, so we will strip the postfix from expanded symbol names.
- */
-static inline char *cleanup_symbol_name(char *s)
-{
-	char *res = NULL;
-
-	res = strrchr(s, '$');
-	if (res)
-		*res = '\0';
-
-	return res;
-}
-#else
-static inline char *cleanup_symbol_name(char *s) { return NULL; }
-#endif
-
 /* Lookup the address for this symbol. Returns 0 if not found. */
 unsigned long kallsyms_lookup_name(const char *name)
 {
@@ -223,9 +203,6 @@ unsigned long kallsyms_lookup_name(const char *name)
 		off = kallsyms_expand_symbol(off, namebuf, ARRAY_SIZE(namebuf));
 
 		if (strcmp(namebuf, name) == 0)
-			return kallsyms_sym_address(i);
-
-		if (cleanup_symbol_name(namebuf) && strcmp(namebuf, name) == 0)
 			return kallsyms_sym_address(i);
 	}
 	return module_kallsyms_lookup_name(name);
@@ -326,6 +303,43 @@ int kallsyms_lookup_size_offset(unsigned long addr, unsigned long *symbolsize,
 	return !!module_address_lookup(addr, symbolsize, offset, NULL, namebuf) ||
 	       !!__bpf_address_lookup(addr, symbolsize, offset, namebuf);
 }
+
+#ifdef CONFIG_LTO_CLANG
+static inline void cleanup_symbol_name(char *s)
+{
+	char *res;
+
+	/*
+	 * LLVM appends various suffixes for local functions and variables that
+	 * must be promoted to global scope as part of LTO.  This can break
+	 * hooking of static functions with kprobes. '.' is not a valid
+	 * character in an identifier in C. Suffixes only in LLVM LTO observed:
+	 * - foo.llvm.[0-9a-f]+
+	 */
+	res = strstr(s, ".llvm.");
+	if (res)
+		*res = '\0';
+
+/*
+ * LLVM appends .cfi to function names when CONFIG_CFI_CLANG is enabled,
+ * which causes confusion and potentially breaks user space tools, so we
+ * will strip the postfix from expanded symbol names.
+ */
+#ifdef CONFIG_CFI_CLANG
+#ifdef CONFIG_THINLTO
+	/* Filter out hashes from static functions */
+	res = strrchr(s, '$');
+	if (res)
+		*res = '\0';
+#endif
+	res = strrchr(s, '.');
+	if (res && !strcmp(res, ".cfi"))
+		*res = '\0';
+#endif
+}
+#else
+static inline void cleanup_symbol_name(char *s) {}
+#endif
 
 /*
  * Lookup an address
