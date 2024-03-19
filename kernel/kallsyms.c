@@ -304,28 +304,16 @@ int kallsyms_lookup_size_offset(unsigned long addr, unsigned long *symbolsize,
 	       !!__bpf_address_lookup(addr, symbolsize, offset, namebuf);
 }
 
-#ifdef CONFIG_LTO_CLANG
-static inline void cleanup_symbol_name(char *s)
-{
-	char *res;
-
-	/*
-	 * LLVM appends various suffixes for local functions and variables that
-	 * must be promoted to global scope as part of LTO.  This can break
-	 * hooking of static functions with kprobes. '.' is not a valid
-	 * character in an identifier in C. Suffixes only in LLVM LTO observed:
-	 * - foo.llvm.[0-9a-f]+
-	 */
-	res = strstr(s, ".llvm.");
-	if (res)
-		*res = '\0';
-
+#ifdef CONFIG_CFI_CLANG
 /*
  * LLVM appends .cfi to function names when CONFIG_CFI_CLANG is enabled,
  * which causes confusion and potentially breaks user space tools, so we
  * will strip the postfix from expanded symbol names.
  */
-#ifdef CONFIG_CFI_CLANG
+static inline void cleanup_symbol_name(char *s)
+{
+	char *res;
+
 #ifdef CONFIG_THINLTO
 	/* Filter out hashes from static functions */
 	res = strrchr(s, '$');
@@ -335,7 +323,6 @@ static inline void cleanup_symbol_name(char *s)
 	res = strrchr(s, '.');
 	if (res && !strcmp(res, ".cfi"))
 		*res = '\0';
-#endif
 }
 #else
 static inline void cleanup_symbol_name(char *s) {}
